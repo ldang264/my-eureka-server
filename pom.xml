@@ -19,12 +19,16 @@
 
         <spring.boot.version>2.1.7.RELEASE</spring.boot.version>
         <spring.cloud.version>Greenwich.SR3</spring.cloud.version>
+
+        <commons.logging.version>1.2</commons.logging.version>
+        <commons.codec.version>1.13</commons.codec.version>
+
         <!-- plugin version -->
-        <maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
         <maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
         <lombok.maven.plugin.version>1.16.18.0</lombok.maven.plugin.version>
         <!-- docker -->
         <dockerfile.maven.plugin.version>1.4.13</dockerfile.maven.plugin.version>
+        <dockerfile.user>ldang264</dockerfile.user>
     </properties>
 
     <dependencyManagement>
@@ -53,6 +57,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>
@@ -75,11 +84,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>${maven.deploy.plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven.jar.plugin.version}</version>
             </plugin>
@@ -95,6 +99,40 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <repository>${dockerfile.user}/${project.artifactId}</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                        <version>${commons.logging.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>commons-codec</groupId>
+                        <artifactId>commons-codec</artifactId>
+                        <version>${commons.codec.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
