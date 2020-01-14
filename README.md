@@ -5,7 +5,7 @@
 ## 使用
 
 - 本地启动  
-下载项目并编译(JRE>=8)后，启动`EurekaServerApplication`的`main`方法
+下载项目并编译(JRE>=8)后，启动`com.github.io.eureka.server.EurekaServerApplication`的`main`方法
 
 - Docker启动  
 ``` bash
